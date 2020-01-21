@@ -15,3 +15,18 @@ O script vai pedir um nome para o arquivo e pronto, cabeçalho feito!
 ![novosh](https://raw.githubusercontent.com/EppurSiMu0ve/novosh/master/20200120-204430.avi.gif)
 
 Baseado nos ensinamentos do mestre [Blau Araujo](https://www.youtube.com/watch?v=c-YNy9wf5gk)
+
+# personalizando
+Para deixar o cabeçalho mais a sua cara faça o seguinte:
+- crie o arquivo <b>~/.config/novosh/config</b>
+- conteúdo do arquivo:
+------------------------------------------------------------------
+Autor: User Dev<br>
+Contato: user.dev@zzzmail.com<br>
+Licença: GNU/GPL v2 & v3<br>
+Editor: geany<br>
+Diretório: /home/user/documents #obs: sem barra no final<br>
+
+-------------------------------------------------------------------
+O script novosh vai ler e carregar essas informações dentro do cabeçalho dos seus scripts.
+Eles serão salvos no diretório especificado e serão aberto com o editor indicado.
