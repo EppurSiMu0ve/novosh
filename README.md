@@ -7,7 +7,11 @@ Para tanto:
 Assim você poderá executar de qualquer lugar o comando:
 
 <code>
-  novosh
+  $ novosh
 </code>
 
+
 O script vai pedir um nome para o arquivo e pronto, cabeçalho feito!
+![novosh](https://raw.githubusercontent.com/EppurSiMu0ve/novosh/master/20200120-204430.avi.gif)
+
+Baseado nos ensinamentos do mestre [Blau Araujo](https://www.youtube.com/watch?v=c-YNy9wf5gk)
