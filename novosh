@@ -1,0 +1,139 @@
+#!/usr/bin/env bash
+
+# -------------------------------------------------------------------------
+# Script		: novosh
+# Descrição		: Agiliza a criação de scripts ao criar ao criar de forma
+#				: automatica um esqueleto já com o shabang e cabeçalho, e
+#				: dando a permissão de execução ao arquivo.
+# Versão		: 2.9
+# Autor			: Eppur Si Muove
+# Contato		: eppur.si.muove.89@keemail.me
+# Criação		: 02/12/2019
+# Modificação	: 21/01/2020
+# Licença		: GNU/GPL v3.0
+# -------------------------------------------------------------------------
+# Uso:
+#
+#	sintaxe:	$ novosh --no-rc
+#
+#	--no-rc	: opcional. força não buscar valores no arquivo de
+#			: configuração ~/.novoshrc | útil quando se tem o
+#			: ~/.novoshrc configurado, mas não deseja usar
+#			: os valores contidos nele.
+#
+#	~/.config/novosh/config
+##			: arquivo de configuração para definição de valores
+#			: padrão para o editor favorito e os campos de
+#			: cabeçalho Autor, Contato e Licença. NOTA: criar
+#			: esse arquivo é opcional, mas agiliza bastante o
+#			: acesso ao seu novo script.
+# -------------------------------------------------------------------------
+
+# verifica se há mais de um parâmetro na chamada do script
+[[ $# -gt 1 ]] && echo "Sintaxe aceita apenas um parâmentro, sendo ele opcional. Uso: novosh < --no-rc >" && exit 1
+
+# variáveis
+autor="dev"
+contato="dev@exemple.net"
+licenca="GNU/GPL v3.0"
+edtFav="vi"
+criacao=$(date +'%d/%m/%Y')
+cfgDir="$HOME/.config/novosh"
+cfg="$cfgDir/config"
+diretorio="$(pwd)"
+[[ $diretorio = "/" ]] && diretorio=''
+
+# formato do arquivo ~/.config/novosh/config
+# ----------------------------------------------------
+#
+# Autor: User Dev
+# Contato: user.dev@zzzmail.com
+# Licença: GNU/GPL v2 & v3
+# Editor: geany
+# Diretório: /home/user/documents #obs: sem barra no final
+#
+# -----------------------------------------------------
+
+# cria diretorio do arquivo de configuração se não houver
+[[ ! -d "$cfgDir" ]] && mkdir -p "$cfgDir"
+
+# carrega informações do arquivo ~/.novoshrc se houver
+if [[ -f $cfg && $1 != "--no-rc" ]]; then
+
+	# define autor
+	tmpAut=$(sed -n -e 's/^.*Autor: //p' "$cfg")
+	[[ -n $tmpAut ]] && autor="$tmpAut"
+	unset tmpAut
+
+	# define contato do autor
+	tmpCnt=$(sed -n -e 's/^.*Contato: //p' "$cfg")
+	[[ -n $tmpCnt ]] && contato="$tmpCnt"
+	unset tmpCnt
+
+	# define a licença padrão
+	tmpLcc=$(sed -n -e 's/^.*Licença: //p' "$cfg")
+	[[ -n $tmpLcc ]] && licenca=$tmpLcc
+	unset tmpLcc
+
+	# define editor válido para abrir arquivo
+	tmpEdt=$(sed -n -e 's/^.*Editor: //p' "$cfg")
+	if [[ -n $tmpEdt ]]; then
+		which "$tmpEdt" &> /dev/null
+		[[ $? -eq 0 ]] && edtFav="$tmpEdt"
+	fi
+	unset tmpEdt
+
+	# define diretório para salvar o arquivo
+	tmpDir=$(sed -n -e 's/^.*Diretório: //p' "$cfg")
+	if [[ -n $tmpDir ]]; then
+		diretorio=$tmpDir
+		mkdir -p $diretorio
+	fi
+	unset tmpDir
+fi
+
+# define nome do script
+read -p "Nome do script : " script
+
+# verifica se o nome é válido
+[[ $script =~ [^[:alnum:]"._-"] || $script == *" "* || $script == "" ]] && echo "Nome de arquivo inválido. Tente sem caracteres especiais." && exit 1
+
+# verifica se tem acesso à escrita no diretório e se já existe um arquivo com esse nome
+scriptName="$script"; script="$diretorio/$script"
+[[ ! -w "$diretorio/" ]] && echo "Você não tem autorização para escrita nesse diretório." && exit 1
+[[ -f $script ]] && echo -e "Já existe um arquivo com esse nome.\nTente novamente com um nome diferente." && exit 1
+
+# se var autor=vazio, faz leitura da entrada do usuário
+[[ $autor = "vazio" ]] && read -p "Autor: " autor
+
+# cria o cabeçalho do programa : shabang + descrição
+echo "#!/usr/bin/env bash
+# -------------------------------------------------------------------------
+# Script		: $scriptName
+# Descrição		: << descrição breve de sua funcionalidade >>
+# Versão		: 0.1-beta
+# Autor			: $autor
+# Contato		: $contato
+# Criação		: $criacao
+# Modificação	:
+# Licença		: $licenca
+# -------------------------------------------------------------------------
+# Uso:
+#
+# -------------------------------------------------------------------------
+" > "$script"
+
+# adiciona permissão de execução
+chmod ug+x $script
+
+# armazena número de linhas do cabeçalho
+numLinhas=$(wc -l $script | cut -d ' ' -f1)
+
+# abre o arquivo com o editor especificado
+case $edtFav in
+	"nano"	| \
+	"geany"	| \
+	"vi"	| \
+	"vim"	) $edtFav +$numLinhas $script;;
+	*		) $edtFav $script;;
+esac
