@@ -5,6 +5,7 @@ Para tanto:
 - dê as permissoes de execução: <b>chmod +x novosh</b> 
 - adicione o diretório anterior ao seu PATH: <b>echo "export PATH=$HOME/.local/bin:$PATH" >> ~/.bashrc </b>
 - recarregue suas configurações: <b>source ~/.bashrc</b>
+
 Assim você poderá executar de qualquer lugar o comando:
 
 <code>
