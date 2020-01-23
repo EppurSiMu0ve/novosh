@@ -3,7 +3,8 @@ Muitas vezes precisamos criar alguns scripts rápidos para fazer alguns teste e 
 Para tanto:
 - copie o arquivo novosh para: <b>~/.local/bin</b>
 - dê as permissoes de execução: <b>chmod +x novosh</b> 
-- adicione o diretório anterior ao seu PATH: <b>export PATH="$HOME/bin:$PATH"</b>
+- adicione o diretório anterior ao seu PATH: <b>echo "export PATH=$HOME/.local/bin:$PATH" >> ~/.bashrc </b>
+- recarregue suas configurações: <b>source ~/.bashrc</b>
 Assim você poderá executar de qualquer lugar o comando:
 
 <code>
